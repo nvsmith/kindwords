@@ -1,0 +1,74 @@
+# Last updated: October 24, 2023
+
+# Remove the following directories & files from Git tracking
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+Desktop.ini
+
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+
+# Images & Designs
+*.png
+*.jpg
+*.jpeg
+### Place any directories or files you don't want tracked below like so:
+myproject/design-files
+myproject/mydesign.psd
+
+
+# WordPress Directories & Files
+wp-admin
+wp-content/ai1wm-backups
+wp-content/plugins
+wp-content/themes/twenty*
+wp-content/upgrade
+### Comment out the uploads directory below for Elementor sites ###
+wp-content/uploads
+wp-content/index.php
+wp-includes
+
+
+# WordPress Root Files
+.htaccess
+index.php
+license.txt
+readme.html
+wp-activate.php
+wp-blog-header.php
+wp-comments-post.php
+wp-config-sample.php
+wp-config.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
+xmlrpc.php
