@@ -26,6 +26,30 @@ function kindwords_shortcode( $atts ) {
 	if ( ! $query->have_posts() ) {
 		return '<p>No testimonials found.</p>';
 	}
+
+    // Start output buffering to capture HTML
+    ob_start();
+
+    echo '<div class="kindwords">'; // Block start
+
+    while ( $query->have_posts() ) {
+        $query->the_post();
+
+        echo '<div class="kindwords__item">'; // Element start
+            // Display the content of the current post as the testimonial
+            echo '<blockquote class="kindwords__quote">' . esc_html( get_the_content() ) . '</blockquote>';
+
+            // Display the title of the current post as the author
+            echo '<p class="kindwords__author">&mdash; ' . esc_html( get_the_title() ) . '</p>';
+        echo '</div>'; // Element end
+    }
+
+    echo '</div>'; // Block end
+
+    wp_reset_postdata();
+
+    // Return the captured HTML from output buffering
+    return ob_get_clean();
 }
 
 // Register shortcode with WordPress:
