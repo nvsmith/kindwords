@@ -7,3 +7,23 @@
  * License: GPL2+
  * Text Domain: kindwords
  */
+
+ // Define the shortcode for displaying testimonials
+function kindwords_shortcode( $atts ) {
+
+	// Set up default values for shortcode attributes in WP
+	$atts = shortcode_atts( array(
+		'posts_per_page' => 5,
+	), $atts, 'kindwords' );
+	
+	// Query the 'kindwords' CPT
+	$query = new WP_Query( array(
+		'post_type' => 'kindwords',
+		'posts_per_page' => intval( $atts['posts_per_page'] ),
+		'post_status' => 'publish',
+	) );
+	
+	if ( ! $query->have_posts() ) {
+		return '<p>No testimonials found.</p>';
+	}
+}
