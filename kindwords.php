@@ -27,3 +27,7 @@ function kindwords_shortcode( $atts ) {
 		return '<p>No testimonials found.</p>';
 	}
 }
+
+// Register shortcode with WordPress:
+// run kindwords_shortcode() & replace shortcode with whatever HTML the function returns
+add_shortcode( 'kindwords', 'kindwords_shortcode' );
