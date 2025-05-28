@@ -99,25 +99,30 @@ function kindwords_load_more_ajax() {
 add_action('wp_ajax_nopriv_kindwords_load_more', 'kindwords_load_more_ajax');
 add_action('wp_ajax_kindwords_load_more', 'kindwords_load_more_ajax');
 
-
 // Define the shortcode for displaying testimonials
 function kindwords_shortcode( $atts ) {
 
 	// Set up default values for shortcode attributes in WP
-	$atts = shortcode_atts( array(
-		'posts_per_page' => 5,
-	), $atts, 'kindwords' );
-	
+	$atts = shortcode_atts(array(
+        'posts_per_page' => 5,
+        'paged'          => 1,
+    ), $atts, 'kindwords');
+
 	// Query the 'kindwords' CPT
-	$query = new WP_Query( array(
-		'post_type' => 'kindwords',
-		'posts_per_page' => intval( $atts['posts_per_page'] ),
-		'post_status' => 'publish',
-	) );
-	
+	$query = new WP_Query(array(
+        'post_type'      => 'kindwords',
+        'posts_per_page' => intval($atts['posts_per_page']),
+        'paged'          => intval($atts['paged']),
+        'post_status'    => 'publish',
+    ));
+
+    // Handle no results
 	if ( ! $query->have_posts() ) {
 		return '<p>No testimonials found.</p>';
 	}
+
+    // Set maxPages for JS
+    $max_pages = $query->max_num_pages;
 
     // Start output buffering to capture HTML
     ob_start();
@@ -144,7 +149,25 @@ function kindwords_shortcode( $atts ) {
 
     wp_reset_postdata();
 
-    // Return the captured HTML from output buffering
+    // Output Load More button if more pages exist
+    if ($max_pages > intval($atts['paged'])) {
+        echo '<div class="kindwords__load-more-wrap">';
+            echo '<button id="kindwords-load-more-btn" data-page="' . intval($atts['paged']) . '" data-max-pages="' . $max_pages . '">Load More</button>';
+        echo '</div>';
+    }
+
+    // Update localized maxPages, ensures JS knows when it has reached the last page
+    add_action('wp_footer', function() use ($max_pages) {
+        ?>
+        <script>
+            if (window.KindWordsData) {
+                window.KindWordsData.maxPages = <?php echo $max_pages; ?>;
+            }
+        </script>
+        <?php
+    });
+
+    // Replace shortcode in the content with the captured HTML from output buffering
     return ob_get_clean();
 }
 
