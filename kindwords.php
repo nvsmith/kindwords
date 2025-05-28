@@ -8,6 +8,42 @@
  * Text Domain: kindwords
  */
 
+// Enqueue frontend scripts
+
+// Hook into WP to load JavaScript for plugin on frontend
+function kindwords_enqueue_scripts() {
+    // Load JS file from the plugin's js folder
+    wp_enqueue_script(
+        // script identifier
+        'kindwords-load-more',
+        plugin_dir_url(__FILE__) . 'js/kindwords-load-more.js',
+        // dependencies
+        array('jquery'),
+        // version
+        '1.0',
+        // load script in footer for better performance
+        true
+    );
+
+    // Make PHP variables available to JS file as global a global object
+    wp_localize_script(
+        'kindwords-load-more',
+        'KindWordsData',
+        array(
+            'ajaxUrl'        => admin_url('admin-ajax.php'),
+            'postsPerPage'   => 5,
+            // maxPages updated later in JS based on total post count
+            'maxPages'       => null,
+            // security token to verify AJAX requests
+            'nonce'          => wp_create_nonce('kindwords_load_more_nonce'),
+        )
+    );
+}
+
+// Hook into WordPress
+add_action('wp_enqueue_scripts', 'kindwords_enqueue_scripts');
+
+
  // Define the shortcode for displaying testimonials
 function kindwords_shortcode( $atts ) {
 
