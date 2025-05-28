@@ -127,7 +127,7 @@ function kindwords_shortcode( $atts ) {
     // Start output buffering to capture HTML
     ob_start();
 
-    echo '<div class="kindwords">'; // Block start
+    echo '<div id="kindwords-container" class="kindwords">'; // Block start
 
     while ( $query->have_posts() ) {
         $query->the_post();
