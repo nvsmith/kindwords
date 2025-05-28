@@ -35,9 +35,13 @@ function kindwords_shortcode( $atts ) {
     while ( $query->have_posts() ) {
         $query->the_post();
 
+        // Remove default WP comments from outputting on the front-end
+        $block_markup = get_the_content(); // Get the raw content of the current post from the WP block editor
+        $parsed_content = apply_filters( 'the_content', $block_markup ); // Remove default WP comments
+
         echo '<div class="kindwords__item">'; // Element start
             // Display the content of the current post as the testimonial
-            echo '<blockquote class="kindwords__quote">' . esc_html( get_the_content() ) . '</blockquote>';
+            echo '<blockquote class="kindwords__quote">' . $parsed_content . '</blockquote>';
 
             // Display the title of the current post as the author
             echo '<p class="kindwords__author">&mdash; ' . esc_html( get_the_title() ) . '</p>';
