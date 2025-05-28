@@ -20,6 +20,9 @@ jQuery(document).ready(function ($) {
         const originalText = button.text();
         button.prop("disabled", true).text("Loading...");
 
+        // Indicate loading state for accessibility
+        button.attr("aria-busy", "true");
+
         // Make AJAX request to tell WP to run the function
         $.post(
             KindWordsData.ajaxUrl,
@@ -46,7 +49,8 @@ jQuery(document).ready(function ($) {
                     if (page >= max) {
                         button.remove(); // No more pages
                     } else {
-                        button.prop("disabled", false).text(originalText); // Re-enable button
+                        // Re-enable button and restore text
+                        button.prop("disabled", false).text(originalText).removeAttr("aria-busy");
                     }
                 } else {
                     button.remove(); // Remove on failure or no more content
