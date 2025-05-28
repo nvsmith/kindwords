@@ -56,6 +56,10 @@ jQuery(document).ready(function ($) {
                     button.remove(); // Remove on failure or no more content
                 }
             }
-        );
+        ).fail(function () {
+            // Network or server error: restore button state and inform via console
+            button.prop("disabled", false).text(originalText).removeAttr("aria-busy");
+            console.error("KindWords AJAX request failed.");
+        });
     });
 });
