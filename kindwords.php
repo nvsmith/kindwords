@@ -31,7 +31,7 @@ function kindwords_enqueue_scripts() {
         'KindWordsData',
         array(
             'ajaxUrl'        => admin_url('admin-ajax.php'),
-            'postsPerPage'   => 5,
+            'postsPerPage'   => 4,
             // maxPages updated later in JS based on total post count
             'maxPages'       => null,
             // security token to verify AJAX requests
@@ -51,8 +51,8 @@ function kindwords_load_more_ajax() {
     // Parse AJAX Data from POST request:
     // default to page 1 and sanitize intval
     $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
-    // default to 5 posts per page
-    $per_page = isset($_POST['posts_per_page']) ? intval($_POST['posts_per_page']) : 5;
+    // default posts per page
+    $per_page = isset($_POST['posts_per_page']) ? intval($_POST['posts_per_page']) : 4;
 
     // Create a new WP Query for custom post type
     $query = new WP_Query(array(
@@ -104,7 +104,7 @@ function kindwords_shortcode( $atts ) {
 
 	// Set up default values for shortcode attributes in WP
 	$atts = shortcode_atts(array(
-        'posts_per_page' => 5,
+        'posts_per_page' => 4,
         'paged'          => 1,
     ), $atts, 'kindwords');
 
