@@ -43,8 +43,64 @@ function kindwords_enqueue_scripts() {
 // Hook into WordPress
 add_action('wp_enqueue_scripts', 'kindwords_enqueue_scripts');
 
+// AJAX handler for loading more testimonials
+function kindwords_load_more_ajax() {
+    // Verify request against CSRF attacks
+    check_ajax_referer('kindwords_load_more_nonce', 'nonce');
 
- // Define the shortcode for displaying testimonials
+    // Parse AJAX Data from POST request:
+    // default to page 1 and sanitize intval
+    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    // default to 5 posts per page
+    $per_page = isset($_POST['posts_per_page']) ? intval($_POST['posts_per_page']) : 5;
+
+    // Create a new WP Query for custom post type
+    $query = new WP_Query(array(
+        'post_type'      => 'kindwords',
+        'posts_per_page' => $per_page,
+        'paged'          => $page,
+        'post_status'    => 'publish',
+    ));
+
+    // Fallback if no posts found and let JS know nothing more to load
+    if (!$query->have_posts()) {
+        wp_send_json_success(array('html' => ''));
+    }
+
+    // Capture HTML as a string
+    ob_start();
+
+    // Start The Loop through each testimonial
+    while ($query->have_posts()) {
+        $query->the_post();
+        
+        // Get the raw content of the current post from the WP block editor 
+        $block_markup = get_the_content(); 
+        // Remove default WP comments from the raw content
+        $parsed_content  = apply_filters('the_content', $block_markup); 
+
+        // Output the HTML template
+        echo '<div class="kindwords__item">';
+            echo '<blockquote class="kindwords__quote">' . $parsed_content . '</blockquote>';
+            echo '<p class="kindwords__author">&mdash; ' . esc_html(get_the_title()) . '</p>';
+        echo '</div>';
+    }
+
+    wp_reset_postdata();
+
+    // Store the output HTML
+    $html = ob_get_clean();
+
+    // Return HTML back to browser as JSON object so JS can insert it onto page
+    wp_send_json_success(array('html' => $html));
+}
+
+// Register AJAX Actions for both logged-in and non-logged-in users
+add_action('wp_ajax_nopriv_kindwords_load_more', 'kindwords_load_more_ajax');
+add_action('wp_ajax_kindwords_load_more', 'kindwords_load_more_ajax');
+
+
+// Define the shortcode for displaying testimonials
 function kindwords_shortcode( $atts ) {
 
 	// Set up default values for shortcode attributes in WP
